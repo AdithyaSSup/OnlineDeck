@@ -1,9 +1,9 @@
 # OnlineDeck
 This repository contains a REST API written in Golang that simulates a deck of cards. It provides three endpoints:
 
-POST /deck?cards= to create a new deck
-GET /deck/:id/draw to draw cards from an existing deck
-GET /deck/:id to open an existing deck
+* POST /deck?cards= to create a new deck 
+* GET /deck/:id/draw to draw cards from an existing deck
+ * GET /deck/:id to open an existing deck
 
 * The API is built using the Gin router and follows the Clean Architecture principles, as described by Uncle Bob. This ensures that the code is modular and easy to maintain.
 
