@@ -15,9 +15,11 @@ Details of the Product requiement/PRD can be found [here](https://toggl.notion.s
 * Instead of using a database, the API utilizes an in-memory map that is created and injected into the DAO layer during server creation and startup.
 
 ## Getting Started
-To get started with this API, you will need to have Golang installed on your machine. You can then clone this repository and run the following command:
+To get started with this API, you will need to have Golang installed on your machine. You can then clone this repository and run the following command from your termainal by navigating to entry directory:
 
 <pre>
+# cd to entry directory to run the project
+cd entry
 go mod tidy
 #this will install all the depencies
 go run main.go
