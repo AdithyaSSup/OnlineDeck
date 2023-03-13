@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/OnlineDeck.iml" filepath="$PROJECT_DIR$/.idea/OnlineDeck.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../toggl/.idea/toggl.iml" filepath="$PROJECT_DIR$/../toggl/.idea/toggl.iml" />
     </modules>
   </component>
 </project>
