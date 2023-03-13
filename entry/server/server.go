@@ -21,11 +21,11 @@ func (s *Server) RegisterAll() {
 }
 
 func (s *Server) registerDeckEndpoints() {
-	rg := s.g.Group("/casino")
+	//rg := s.g.Group("/casino")
 	// all required dependencies for controller are injected here
 	dc := inject.DeckController()
 
-	rg.POST("/decks", dc.CreateDeck)
-	rg.GET("/decks/:id", dc.Open)
-	rg.GET("/decks/:id/draw", dc.DrawCards)
+	s.g.POST("/decks", dc.CreateDeck)
+	s.g.GET("/decks/:id", dc.Open)
+	s.g.GET("/decks/:id/draw", dc.DrawCards)
 }
