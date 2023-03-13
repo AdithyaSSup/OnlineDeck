@@ -24,7 +24,8 @@ go run main.go
 
 Usage
 1. Create a new deck
-To create a new deck, send a POST request to /deck. The response will contain a JSON object with the id of the new deck:
+To create a new full deck, send a POST request to /deck. The response will contain a JSON object with the id of the new deck:
+To create a partial deck, send a POST request to /deck?cards=(card_code).
 <pre>
 Reqest:
 POST api/v1/deck?cards=(card_code)
