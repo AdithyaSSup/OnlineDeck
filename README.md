@@ -26,7 +26,7 @@ go run main.go
 #This will start the API on http://localhost:3000/api/v1.
 </pre>
 
-Usage
+## Usage
 ### 1. Create a new deck <br>
 To create a new full deck, send a POST request to /deck. The response will contain a JSON object with the id of the new deck:
 To create a partial deck, send a POST request to /deck?cards=(card_code).
