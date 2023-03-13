@@ -15,7 +15,6 @@ import (
 type DeckService interface {
 	Create(ctx context.Context, req deck.CreateDeckRequestDTO) (*deck.CreateDeckResponseDTO, error)
 	Open(ctx context.Context, req deck.OpenDeckRequestDTO) (*deck.DeckResponseDTO, error)
-	//Shuffle(ctx context.Context, deckID string) error
 	DrawCard(ctx context.Context, req deck.DrawCardRequestDTO) (*deck.DrawCardResponseDTO, error)
 }
 

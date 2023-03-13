@@ -28,7 +28,7 @@ func (s *Server) RegisterAll() {
 func (s *Server) registerDeckEndpoints() {
 	// all required dependencies for controller are injected here
 	dc := inject.DeckController(s.deckMap)
-
+	// all deck endpoints with their controller methods are mapped here
 	s.g.POST("/decks", dc.CreateDeck)
 	s.g.GET("/decks/:id", dc.OpenDeck)
 	s.g.GET("/decks/:id/draw", dc.DrawCards)
