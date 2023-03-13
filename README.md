@@ -1,7 +1,7 @@
 # Toggle- Online Deck
 This repository contains a REST API written in Golang that simulates a deck of cards.
 
-Details of the Product requiement/PRD can be found [here](https://toggl.notion.site/Toggl-Backend-Unattended-Programming-Test-015a95428b044b4398ba62ccc72a007e)
+Details of the Product requirement/PRD can be found [here](https://toggl.notion.site/Toggl-Backend-Unattended-Programming-Test-015a95428b044b4398ba62ccc72a007e)
 
 * The API is built using the [Gin](https://github.com/gin-gonic/gin) router and follows the [Clean Architecture principles](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html), as described by Uncle Bob. This ensures that the code is modular and easy to maintain.
 
