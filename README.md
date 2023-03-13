@@ -96,3 +96,8 @@ Response:
     ]
 }
 </pre>
+
+### Tests
+Unit tests for the service layer can be found in the "service" directory. To run these tests, navigate to the "pkg" folder in the terminal and run the following command:
+<pre> go test -v ./... </pre>
+It should be noted that even though the tests are written in the service layer, the DAO layer is mocked for all test cases, making them unit tests.
