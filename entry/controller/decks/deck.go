@@ -12,6 +12,8 @@ import (
 	"strings"
 )
 
+var ErrInvalidReqParam = errors.New("invalid request parameter")
+
 type DeckService interface {
 	Create(ctx context.Context, req deck.CreateDeckRequestDTO) (*deck.CreateDeckResponseDTO, error)
 	Open(ctx context.Context, req deck.OpenDeckRequestDTO) (*deck.DeckResponseDTO, error)
@@ -95,7 +97,7 @@ func (d *Controller) DrawCards(c *gin.Context) {
 	id := c.Param("id")
 
 	if err := c.Bind(&req); err != nil {
-		d.handleError(c, err)
+		d.handleError(c, ErrInvalidReqParam)
 		return
 	}
 
@@ -149,10 +151,22 @@ func (d *Controller) handleError(c *gin.Context, err error) {
 			Title:  "invalid card value",
 			Detail: err.Error(),
 		})
+	case dao.ErrInvalidUUID:
+		c.JSON(http.StatusBadRequest, error2.HttpError{
+			Type:   "INVALID_RESOURCE_ID",
+			Title:  "invalid uuid",
+			Detail: err.Error(),
+		})
 	case deck.ErrInvalidCardName:
 		c.JSON(http.StatusBadRequest, error2.HttpError{
 			Type:   "INVALID_CARD_NAME",
 			Title:  "invalid card name",
+			Detail: err.Error(),
+		})
+	case ErrInvalidReqParam:
+		c.JSON(http.StatusBadRequest, error2.HttpError{
+			Type:   "INVALID_REQUEST",
+			Title:  "invalid request",
 			Detail: err.Error(),
 		})
 	default:
