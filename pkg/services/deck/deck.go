@@ -28,6 +28,7 @@ func NewService(dao DeckDao) *Service {
 	}
 }
 
+// Create : creates and stores a new deck either partial deck or complete based on input and returns the deck
 func (ds *Service) Create(ctx context.Context, req CreateDeckRequestDTO) (*CreateDeckResponseDTO, error) {
 
 	cards, err := ds.GetCards(ctx, req.CardNames)
@@ -48,8 +49,9 @@ func (ds *Service) Create(ctx context.Context, req CreateDeckRequestDTO) (*Creat
 	}, err
 }
 
-func (ds *Service) Open(ctx context.Context, deckID string) (*DeckResponseDTO, error) {
-	resp, err := ds.DeckDao.Get(ctx, deckID)
+// Open : given a deck id returns the contents of the deck
+func (ds *Service) Open(ctx context.Context, req OpenDeckRequestDTO) (*DeckResponseDTO, error) {
+	resp, err := ds.DeckDao.Get(ctx, req.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -59,6 +61,7 @@ func (ds *Service) Open(ctx context.Context, deckID string) (*DeckResponseDTO, e
 	}, err
 }
 
+// DrawCard : returns the cards from the top of the deck
 func (ds *Service) DrawCard(ctx context.Context, req DrawCardRequestDTO) (*DrawCardResponseDTO, error) {
 	deck, err := ds.DeckDao.Get(ctx, req.DeckID)
 	if err != nil {
@@ -72,7 +75,8 @@ func (ds *Service) DrawCard(ctx context.Context, req DrawCardRequestDTO) (*DrawC
 	return &DrawCardResponseDTO{Cards: cards}, err
 }
 
-func (ds *Service) GetCards(ctx context.Context, cardNames []string) ([]models.Card, error) {
+// GetCards : given a list or no list of card names , returns set of cards
+func (ds *Service) GetCards(_ context.Context, cardNames []string) ([]models.Card, error) {
 	var cards []models.Card
 
 	// If cardNames are provided, create a partial deck
@@ -108,7 +112,9 @@ func (ds *Service) GetCards(ctx context.Context, cardNames []string) ([]models.C
 	return cards, nil
 }
 
+// GetCardSuitRankMap :returns two maps: one mapping bytes to CardRanks, and another mapping bytes to CardSuits.
 func (ds *Service) GetCardSuitRankMap() (map[byte]models.CardRank, map[byte]models.CardSuit) {
+	// Define a map that maps bytes to CardRanks.
 	cardRankMap := map[byte]models.CardRank{
 		'A': models.RankAce,
 		'2': models.RankTwo,
@@ -119,11 +125,12 @@ func (ds *Service) GetCardSuitRankMap() (map[byte]models.CardRank, map[byte]mode
 		'7': models.RankSeven,
 		'8': models.RankEight,
 		'9': models.RankNine,
-		'0': models.RankTen,
+		'1': models.RankTen, // Note: the key is the byte '1', not the int 1.
 		'J': models.RankJack,
 		'Q': models.RankQueen,
 		'K': models.RankKing,
 	}
+	// Define a map that maps bytes to CardSuits.
 	cardSuitMap := map[byte]models.CardSuit{
 		'H': models.SuitHearts,
 		'C': models.SuitClubs,
@@ -133,25 +140,31 @@ func (ds *Service) GetCardSuitRankMap() (map[byte]models.CardRank, map[byte]mode
 	return cardRankMap, cardSuitMap
 }
 
-func getAllSuits() []models.CardSuit {
+// GetAllSuits : returns a slice containing all four CardSuits.
+func GetAllSuits() []models.CardSuit {
 	return []models.CardSuit{models.SuitClubs, models.SuitDiamonds, models.SuitHearts, models.SuitSpades}
 }
 
-func getAllRanks() []models.CardRank {
+// GetAllRanks : returns a slice containing all thirteen CardRanks.
+func GetAllRanks() []models.CardRank {
 	return []models.CardRank{models.RankAce, models.RankTwo, models.RankThree, models.RankFour, models.RankFive,
 		models.RankSix, models.RankSeven, models.RankEight, models.RankNine, models.RankTen, models.RankJack,
 		models.RankQueen, models.RankKing}
 }
 
+// GetAllCards : returns a slice containing all 52 possible Card combinations.
 func GetAllCards() []models.Card {
+
 	var cards []models.Card
-	for _, suit := range getAllSuits() {
-		for _, rank := range getAllRanks() {
+	for _, suit := range GetAllSuits() {
+		for _, rank := range GetAllRanks() {
+
 			card := models.Card{
 				Value: rank,
 				Suit:  suit,
-				Code:  fmt.Sprintf("%c%c", rank[0], suit[0]),
+				Code:  fmt.Sprintf("%c%c", rank[0], suit[0]), // Set the Code field to a string representation of the Card.
 			}
+			// Add the new Card to the slice of Cards.
 			cards = append(cards, card)
 		}
 	}

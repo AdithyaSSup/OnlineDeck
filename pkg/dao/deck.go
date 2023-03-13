@@ -10,7 +10,7 @@ import (
 
 var ErrUUIDGeneration = errors.New("failed to generate unique UUID")
 var ErrDeckNotFound = errors.New("decks does not exist for the given id")
-var ErrInvalidDraw = errors.New(" insufficient cards available in the decks ")
+var ErrInvalidDraw = errors.New(" insufficient cards available in the deck ")
 var ErrInvalidUUID = errors.New(" id is not a valid uuid ")
 
 type DeckDao struct {
@@ -18,46 +18,49 @@ type DeckDao struct {
 }
 
 // NewDeckDao returns a new instance of DeckDao.
-func NewDeckDao() *DeckDao {
-	return &DeckDao{Decks: make(map[uuid.UUID]*models.Deck)}
+func NewDeckDao(decks map[uuid.UUID]*models.Deck) *DeckDao {
+	return &DeckDao{Decks: decks}
 }
 
 // Create creates a new deck with the given cards and shuffle option.
 func (d *DeckDao) Create(ctx context.Context, cards []models.Card, shuffle bool) (*models.Deck, error) {
 
-	id, err := d.CreateUUID(ctx, 0)
+	idr, err := d.CreateUUID(ctx, 0) // idr holds the reference to UUID
 	if err != nil {
 		return nil, err
 	}
 
-	d.Decks[*id] = &models.Deck{
-		ID:    *id,
+	id := *idr // id contains the actual id
+
+	d.Decks[id] = &models.Deck{
+		ID:    id,
 		Cards: cards,
 	}
 
 	if shuffle {
-		return d.Shuffle(ctx, d.Decks[*id])
+		return d.Shuffle(ctx, d.Decks[id])
 	}
 
-	return d.Decks[*id], err
+	return d.Decks[id], err
 }
 
 // Get returns the deck with the given ID, or an error if it does not exist.
-func (d *DeckDao) Get(ctx context.Context, id string) (*models.Deck, error) {
-	uuid, err := uuid.Parse(id)
+func (d *DeckDao) Get(_ context.Context, id string) (*models.Deck, error) {
+	uid, err := uuid.Parse(id)
 	if err != nil {
 		return nil, ErrInvalidUUID
 	}
-	value, exists := d.Decks[uuid]
+
+	value, exists := d.Decks[uid]
 	if exists {
 		return value, nil
-	} else {
-		return nil, ErrDeckNotFound
 	}
+
+	return nil, ErrDeckNotFound
 }
 
-// Draw removes the given number of cards from the deck with the given ID.
-func (d *DeckDao) Draw(ctx context.Context, deck *models.Deck, count int) ([]models.Card, error) {
+// Draw : removes the given number of cards from the deck with the given ID.
+func (d *DeckDao) Draw(_ context.Context, deck *models.Deck, count int) ([]models.Card, error) {
 
 	cards := deck.Cards
 
@@ -78,7 +81,7 @@ func (d *DeckDao) Draw(ctx context.Context, deck *models.Deck, count int) ([]mod
 }
 
 // Shuffle shuffles the deck with the given ID.
-func (d *DeckDao) Shuffle(ctx context.Context, deck *models.Deck) (*models.Deck, error) {
+func (d *DeckDao) Shuffle(_ context.Context, deck *models.Deck) (*models.Deck, error) {
 
 	cards := deck.Cards
 	rand.Shuffle(len(cards), func(i, j int) {
@@ -90,15 +93,17 @@ func (d *DeckDao) Shuffle(ctx context.Context, deck *models.Deck) (*models.Deck,
 	return deck, nil
 }
 
+// CreateUUID generates a UUID which is always unique
 func (d *DeckDao) CreateUUID(ctx context.Context, count int) (*uuid.UUID, error) {
 	if count > 10 {
 		return nil, ErrUUIDGeneration
 	}
+
 	id := uuid.New()
+
 	_, exists := d.Decks[id]
 	if exists {
 		return d.CreateUUID(ctx, count+1)
-	} else {
-		return &id, nil
 	}
+	return &id, nil
 }

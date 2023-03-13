@@ -16,18 +16,18 @@ type DrawCardRequestDTO struct {
 }
 
 type OpenDeckRequestDTO struct {
-	DeckID string
+	Id string
 }
 
 // Response DTO's
 type DeckResponseDTO struct {
 	models.Deck
-	RemainingCards int `json:"remaining"`
+	RemainingCards int
 }
 
 type CreateDeckResponseDTO struct {
 	DeckResponseDTO
-	Cards omit `json:"cards,omitempty"`
+	Cards omit
 }
 
 type OpenDeckResponseDTO struct {
@@ -35,5 +35,5 @@ type OpenDeckResponseDTO struct {
 }
 
 type DrawCardResponseDTO struct {
-	Cards []models.Card `json:"cards"`
+	Cards []models.Card
 }

@@ -13,7 +13,6 @@ type CardRank string
 
 const (
 	RankAce   CardRank = "ACE"
-	RankOne   CardRank = "1"
 	RankTwo   CardRank = "2"
 	RankThree CardRank = "3"
 	RankFour  CardRank = "4"

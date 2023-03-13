@@ -1,6 +1,7 @@
 package deck
 
 import (
+	"OnlineDeck/pkg/dao"
 	"OnlineDeck/pkg/models"
 	"context"
 	"github.com/google/uuid"
@@ -16,6 +17,15 @@ const (
 	createFunctionTestCase3 = "test - create method with invalid card name"
 	createFunctionTestCase4 = "test - create method with invalid card suit name"
 	createFunctionTestCase5 = "test - create method with invalid card rank name"
+	OpenFunctionTestCase1   = "test - open method with valid uuid"
+	OpenFunctionTestCase2   = "test - open method with invalid uuid"
+	OpenFunctionTestCase3   = "test - open method with valid uuid but no deck against it"
+)
+
+var (
+	uuidOpenFunctionTestCase1 = uuid.New()
+	uuidOpenFunctionTestCase2 = "not-a-valid-uuid"
+	uuidOpenFunctionTestCase3 = uuid.New()
 )
 
 // Mock implementation of the DeckDao interface
@@ -52,7 +62,7 @@ func TestCreate(t *testing.T) {
 	}{
 		{
 			name:      createFunctionTestCase1,
-			cardNames: []string{"AH", "KH", "0D", "JS"},
+			cardNames: []string{"AH", "KH", "1D", "JS"},
 			shuffled:  true,
 		},
 		{
@@ -104,7 +114,7 @@ func TestCreate(t *testing.T) {
 								Code:  "KH"},
 							{Suit: models.SuitDiamonds,
 								Value: models.RankTen,
-								Code:  "0D"},
+								Code:  "1D"},
 							{Suit: models.SuitSpades,
 								Value: models.RankJack,
 								Code:  "JS"},
@@ -123,6 +133,81 @@ func TestCreate(t *testing.T) {
 
 			// Test
 			actualRes, actualErr := service.Create(ctx, req)
+
+			// Assert
+			if tc.expectedErr != nil {
+				assert.EqualError(t, actualErr, tc.expectedErr.Error())
+			} else {
+				assert.NoError(t, actualErr)
+				assert.Equal(t, len(expectedDeck.Cards), actualRes.RemainingCards)
+				assert.Equal(t, expectedDeck.ID, actualRes.ID)
+				mockDeckDao.AssertExpectations(t)
+			}
+		})
+	}
+}
+
+func TestOpen(t *testing.T) {
+	testCases := []struct {
+		name        string
+		deckID      string
+		expectedErr error
+	}{
+		{
+			name:   OpenFunctionTestCase1,
+			deckID: uuidOpenFunctionTestCase1.String(),
+		},
+		{
+			name:        OpenFunctionTestCase2,
+			deckID:      uuidOpenFunctionTestCase2,
+			expectedErr: dao.ErrInvalidUUID,
+		},
+		{
+			name:        OpenFunctionTestCase3,
+			deckID:      uuidOpenFunctionTestCase3.String(),
+			expectedErr: dao.ErrInvalidUUID,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			mockDeckDao := new(MockDeckDao)
+			service := NewService(mockDeckDao)
+
+			ctx := context.Background()
+			req := OpenDeckRequestDTO{
+				Id: tc.deckID,
+			}
+			var expectedDeck *models.Deck
+			// Mock the DeckDao's Create method
+			if tc.expectedErr == nil {
+
+				if tc.name == OpenFunctionTestCase1 {
+					expectedDeck = &models.Deck{
+						ID: uuidOpenFunctionTestCase1,
+						Cards: []models.Card{
+							{Suit: models.SuitHearts,
+								Value: models.RankAce,
+								Code:  "AH"},
+							{Suit: models.SuitHearts,
+								Value: models.RankKing,
+								Code:  "KH"},
+							{Suit: models.SuitDiamonds,
+								Value: models.RankTen,
+								Code:  "1D"},
+							{Suit: models.SuitSpades,
+								Value: models.RankJack,
+								Code:  "JS"},
+						},
+					}
+				}
+				mockDeckDao.On("Get", ctx, expectedDeck.ID.String()).Return(expectedDeck, nil)
+			} else {
+				mockDeckDao.On("Get", ctx, mock.Anything).Return(expectedDeck, tc.expectedErr)
+			}
+
+			// Test
+			actualRes, actualErr := service.Open(ctx, req)
 
 			// Assert
 			if tc.expectedErr != nil {

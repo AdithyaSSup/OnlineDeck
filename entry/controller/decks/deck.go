@@ -14,7 +14,7 @@ import (
 
 type DeckService interface {
 	Create(ctx context.Context, req deck.CreateDeckRequestDTO) (*deck.CreateDeckResponseDTO, error)
-	Open(ctx context.Context, deckID string) (*deck.DeckResponseDTO, error)
+	Open(ctx context.Context, req deck.OpenDeckRequestDTO) (*deck.DeckResponseDTO, error)
 	//Shuffle(ctx context.Context, deckID string) error
 	DrawCard(ctx context.Context, req deck.DrawCardRequestDTO) (*deck.DrawCardResponseDTO, error)
 }
@@ -59,22 +59,33 @@ func (d *Controller) CreateDeck(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, resp)
+	c.JSON(http.StatusCreated, CreateDeckResponse{
+		ID:        resp.ID,
+		Shuffle:   resp.Shuffled,
+		Remaining: resp.RemainingCards,
+	})
 }
 
-func (d *Controller) Open(c *gin.Context) {
+func (d *Controller) OpenDeck(c *gin.Context) {
 	ctx := c.Request.Context()
 
 	id := c.Param("id")
 
-	res, err := d.DeckService.Open(ctx, id)
+	res, err := d.DeckService.Open(ctx, deck.OpenDeckRequestDTO{Id: id})
 
 	if err != nil {
 		d.handleError(c, err)
 		return
 	}
 
-	c.JSON(http.StatusOK, res)
+	c.JSON(http.StatusOK, OpenDeckResponse{
+		CreateDeckResponse: CreateDeckResponse{
+			ID:        res.ID,
+			Shuffle:   res.Shuffled,
+			Remaining: res.RemainingCards,
+		},
+		Cards: res.Cards,
+	})
 
 }
 
@@ -99,7 +110,7 @@ func (d *Controller) DrawCards(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, res)
+	c.JSON(http.StatusOK, DrawCardsResponse{Cards: res.Cards})
 
 }
 
@@ -111,14 +122,14 @@ func (d *Controller) handleError(c *gin.Context, err error) {
 	switch errors.Cause(err) {
 	case dao.ErrInvalidDraw:
 		c.JSON(http.StatusBadRequest, error2.HttpError{
-			Type:   "INVALID_RESOURCE_ID",
+			Type:   "INVALID_COUNT",
 			Title:  "invalid draw count",
 			Detail: err.Error(),
 		})
 	case dao.ErrUUIDGeneration:
 		c.JSON(http.StatusInternalServerError, error2.HttpError{
 			Type:   "INTERNAL_SERVER_ERROR",
-			Title:  "unique Id not generated",
+			Title:  "unique Id generation failure",
 			Detail: err.Error(),
 		})
 	case dao.ErrDeckNotFound:
@@ -129,20 +140,20 @@ func (d *Controller) handleError(c *gin.Context, err error) {
 		})
 	case deck.ErrInvalidCardSuit:
 		c.JSON(http.StatusBadRequest, error2.HttpError{
-			Type:   "INVALID_RESOURCE_ID",
+			Type:   "INVALID_SUIT_ID",
 			Title:  "invalid suit",
 			Detail: err.Error(),
 		})
 	case deck.ErrInvalidCardValue:
 		c.JSON(http.StatusBadRequest, error2.HttpError{
-			Type:   "INVALID_RESOURCE_ID",
-			Title:  "invalid card",
+			Type:   "INVALID_CARD_VALUE",
+			Title:  "invalid card value",
 			Detail: err.Error(),
 		})
 	case deck.ErrInvalidCardName:
 		c.JSON(http.StatusBadRequest, error2.HttpError{
-			Type:   "INVALID_RESOURCE_ID",
-			Title:  "invalid name",
+			Type:   "INVALID_CARD_NAME",
+			Title:  "invalid card name",
 			Detail: err.Error(),
 		})
 	default:
