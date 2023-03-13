@@ -29,13 +29,13 @@ Usage
 To create a new full deck, send a POST request to /deck. The response will contain a JSON object with the id of the new deck:
 To create a partial deck, send a POST request to /deck?cards=(card_code).
 <pre>
-Reqest:
+#Request:
 POST api/v1/deck?cards=(card_code)
 {
    shuffle :(true/false)
 }
 
-Response:
+#Response:
 {
     "deck_id": "a251071b-662f-44b6-ba11-e24863039c59",
     "shuffled": false,
@@ -48,9 +48,10 @@ Response:
 To draw cards from an existing deck, send a GET request to /deck/:id/draw?count=<number>, where :id is the ID of the deck you want to draw from and count is the count of cards that you want to draw. The response will contain a JSON object with the drawn cards:
 
 <pre>
+#Request:
 GET /deck/a251071b-662f-44b6-ba11-e24863039c59/draw?count=2
 
-Response:
+#Response:
 {
     "cards": [
         {
@@ -70,9 +71,10 @@ Response:
 To open an existing deck, send a GET request to /deck/:id, where :id is the ID of the deck you want to open. The response will contain a JSON object with the details of the deck:
 
 <pre>
+#Request:
 GET /deck/a251071b-662f-44b6-ba11-e24863039c59
 
-Response:
+#Response:
 {
     "deck_id": "a251071b-662f-44b6-ba11-e24863039c59",
     "shuffled": false,
