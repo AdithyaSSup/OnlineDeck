@@ -1,4 +1,4 @@
-# OnlineDeck
+# Toggle- Online Deck
 This repository contains a REST API written in Golang that simulates a deck of cards.
 
 Details of the Product requiement/PRD can be found [here](https://toggl.notion.site/Toggl-Backend-Unattended-Programming-Test-015a95428b044b4398ba62ccc72a007e)
