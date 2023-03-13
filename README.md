@@ -12,6 +12,8 @@ Details of the Product requiement/PRD can be found [here](https://toggl.notion.s
 * The package structure follows a similar pattern, where the service, model, and dao layers are separated into their own package folders. 
   Any client, such as a controller or worker, can depend on the implementations provided by these packages.
 
+* Instead of using a database, the API utilizes an in-memory map that is created and injected into the DAO layer during server creation and startup.
+
 ## Getting Started
 To get started with this API, you will need to have Golang installed on your machine. You can then clone this repository and run the following command:
 
