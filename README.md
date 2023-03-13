@@ -12,6 +12,8 @@ Details of the Product requiement/PRD can be found [here](https://toggl.notion.s
 * The package structure follows a similar pattern, where the service, model, and dao layers are separated into their own package folders. 
   Any client, such as a controller or worker, can depend on the implementations provided by these packages.
 
+* Instead of using a database, the API utilizes an in-memory map that is created and injected into the DAO layer during server creation and startup.
+
 ## Getting Started
 To get started with this API, you will need to have Golang installed on your machine. You can then clone this repository and run the following command:
 
@@ -23,17 +25,17 @@ go run main.go
 </pre>
 
 Usage
-1. Create a new deck
+### 1. Create a new deck <br>
 To create a new full deck, send a POST request to /deck. The response will contain a JSON object with the id of the new deck:
 To create a partial deck, send a POST request to /deck?cards=(card_code).
 <pre>
-Reqest:
+#Request:
 POST api/v1/deck?cards=(card_code)
 {
    shuffle :(true/false)
 }
 
-Response:
+#Response:
 {
     "deck_id": "a251071b-662f-44b6-ba11-e24863039c59",
     "shuffled": false,
@@ -42,13 +44,14 @@ Response:
 
 </pre>
 
-2. Draw cards from an existing deck
+### 2. Draw cards from an existing deck <br>
 To draw cards from an existing deck, send a GET request to /deck/:id/draw?count=<number>, where :id is the ID of the deck you want to draw from and count is the count of cards that you want to draw. The response will contain a JSON object with the drawn cards:
 
 <pre>
+#Request:
 GET /deck/a251071b-662f-44b6-ba11-e24863039c59/draw?count=2
 
-Response:
+#Response:
 {
     "cards": [
         {
@@ -64,13 +67,14 @@ Response:
     ]
 }
 </pre>
-Open an existing deck
+### 3. Open an existing deck <br>
 To open an existing deck, send a GET request to /deck/:id, where :id is the ID of the deck you want to open. The response will contain a JSON object with the details of the deck:
 
 <pre>
+#Request:
 GET /deck/a251071b-662f-44b6-ba11-e24863039c59
 
-Response:
+#Response:
 {
     "deck_id": "a251071b-662f-44b6-ba11-e24863039c59",
     "shuffled": false,
@@ -94,3 +98,8 @@ Response:
     ]
 }
 </pre>
+
+### Tests
+Unit tests for the service layer can be found in the "service" directory. To run these tests, navigate to the "pkg" folder in the terminal and run the following command:
+<pre> go test -v ./... </pre>
+It should be noted that even though the tests are written in the service layer, the DAO layer is mocked for all test cases, making them unit tests.
