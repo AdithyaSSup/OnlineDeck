@@ -23,7 +23,7 @@ cd entry
 go mod tidy
 #this will install all the depencies
 go run main.go
-#This will start the API on http://localhost:3000/api/v1.
+#This will start the API on http://localhost:3000/.
 </pre>
 
 ## Usage
@@ -32,7 +32,7 @@ To create a new full deck, send a POST request to /decks. The response will cont
 To create a partial deck, send a POST request to /decks?cards=(card_code).
 <pre>
 #Request:
-POST http://localhost:3000/api/v1/decks?cards=(card_code)
+POST http://localhost:3000/decks?cards=(card_code)
 {
    shuffle :(true/false)
 }
@@ -51,7 +51,7 @@ To draw cards from an existing deck, send a GET request to /deck/:id/draw?count=
 
 <pre>
 #Request:
-GET http://localhost:3000/api/v1/decks/a251071b-662f-44b6-ba11-e24863039c59/draw?count=2
+GET http://localhost:3000/decks/a251071b-662f-44b6-ba11-e24863039c59/draw?count=2
 
 #Response:
 {
@@ -74,7 +74,7 @@ To open an existing deck, send a GET request to /deck/:id, where :id is the ID o
 
 <pre>
 #Request:
-GET http://localhost:3000/api/v1/decks/a251071b-662f-44b6-ba11-e24863039c59
+GET http://localhost:3000/decks/a251071b-662f-44b6-ba11-e24863039c59
 
 #Response:
 {
