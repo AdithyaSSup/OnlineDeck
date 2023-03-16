@@ -32,7 +32,7 @@ To create a new full deck, send a POST request to /deck. The response will conta
 To create a partial deck, send a POST request to /deck?cards=(card_code).
 <pre>
 #Request:
-POST api/v1/deck?cards=(card_code)
+POST http://localhost:3000/api/v1/decks?cards=(card_code)
 {
    shuffle :(true/false)
 }
@@ -51,7 +51,7 @@ To draw cards from an existing deck, send a GET request to /deck/:id/draw?count=
 
 <pre>
 #Request:
-GET /deck/a251071b-662f-44b6-ba11-e24863039c59/draw?count=2
+GET http://localhost:3000/api/v1/decks/a251071b-662f-44b6-ba11-e24863039c59/draw?count=2
 
 #Response:
 {
@@ -74,7 +74,7 @@ To open an existing deck, send a GET request to /deck/:id, where :id is the ID o
 
 <pre>
 #Request:
-GET /deck/a251071b-662f-44b6-ba11-e24863039c59
+GET http://localhost:3000/api/v1/decks/a251071b-662f-44b6-ba11-e24863039c59
 
 #Response:
 {
