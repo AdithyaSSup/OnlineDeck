@@ -28,8 +28,8 @@ go run main.go
 
 ## Usage
 ### 1. Create a new deck <br>
-To create a new full deck, send a POST request to /deck. The response will contain a JSON object with the id of the new deck:
-To create a partial deck, send a POST request to /deck?cards=(card_code).
+To create a new full deck, send a POST request to /decks. The response will contain a JSON object with the id of the new deck:
+To create a partial deck, send a POST request to /decks?cards=(card_code).
 <pre>
 #Request:
 POST http://localhost:3000/api/v1/decks?cards=(card_code)
